@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-	const data = null;
+	const data: any = null;
 
 	return NextResponse.json(data, {
 		status: 200
