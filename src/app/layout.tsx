@@ -3,7 +3,6 @@
 import { Link } from '@chakra-ui/next-js';
 import { Container, HStack } from '@chakra-ui/react';
 import moment from 'moment';
-import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.scss';
 import { Providers } from './providers';
@@ -12,11 +11,6 @@ const locale = 'hu';
 moment.locale(locale);
 
 const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-	title: 'Darts',
-	description: 'Darts'
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (

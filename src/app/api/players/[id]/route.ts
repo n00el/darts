@@ -7,7 +7,9 @@ export async function GET(request: NextRequest, context: { params: { id: string 
 	const { data } = await supabase.from('players').select().eq('id', id).limit(1);
 
 	if (!data) {
-		return NextResponse.next();
+		return NextResponse.json(null, {
+			status: 404
+		});
 	}
 
 	return NextResponse.json(data[0], {

@@ -7,7 +7,9 @@ export async function GET(request: NextRequest, context: { params: { id: string 
 	const { data } = await supabase.from('participants').select('*, player(*)').eq('game_event', id);
 
 	if (!data?.length) {
-		return NextResponse.next();
+		return NextResponse.json(null, {
+			status: 404
+		});
 	}
 
 	return NextResponse.json(data, {

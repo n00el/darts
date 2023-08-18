@@ -6,11 +6,6 @@ import useSWR from 'swr';
 
 import { Table, TableContainer, Th, Thead, Tr } from '@chakra-ui/react';
 import { IPlayer } from 'models/player';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-	title: 'Játékosok'
-};
 
 export default function Players() {
 	const { data: players, error, isLoading } = useSWR<IPlayer[]>('/api/players');
