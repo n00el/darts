@@ -34,7 +34,7 @@ export default function GameEventCard(props: IProps) {
 						<Button>Megnyitás</Button>
 					</Link>
 
-					{dayDiff > 0 && (
+					{props.gameEvent.is_open && (
 						<JoinEventModal gameEvent={props.gameEvent}>
 							<Button variant="solid" colorScheme="blue">
 								Nevezés

@@ -4,7 +4,7 @@ import supabase from 'utils/supabase';
 
 export async function POST(request: NextRequest, context: { params: { id: string } }) {
 	const id = +context.params.id;
-	const { data } = await supabase.from('game_events').select('*, participants(id)').eq('id', id).limit(1);
+	const { data } = await supabase.from('game_events').select('*, participants(player)').eq('id', id).limit(1);
 
 	if (!data) {
 		return NextResponse.json(null, {
@@ -12,7 +12,19 @@ export async function POST(request: NextRequest, context: { params: { id: string
 		});
 	}
 
-	const participants = data[0].participants as { id: number }[];
+	const participants = data[0].participants as { player: number }[];
+
+	// if there are no participants, return an error or participants is even
+	if (!participants || participants.length % 2 !== 0) {
+		return NextResponse.json(
+			{
+				error: `There are no participants or the number of participants is not even.`
+			},
+			{
+				status: 400
+			}
+		);
+	}
 
 	// create a random order of participants
 	const shuffledParticipants = participants.sort(() => Math.random() - 0.5);
@@ -31,12 +43,20 @@ export async function POST(request: NextRequest, context: { params: { id: string
 
 		const game = await supabase.from('games').insert({
 			game_event: id,
-			player1: player1.id,
-			player2: player2?.id
+			level: 1,
+			player1: player1.player,
+			player2: player2.player
 		});
 
 		games_created.push(game);
 	});
+
+	await supabase
+		.from('game_events')
+		.update({
+			is_open: false
+		})
+		.eq('id', id);
 
 	return NextResponse.json(games_created, {
 		status: 200

@@ -10,3 +10,26 @@ body {
 	overflow-x: hidden;
 	background: #f7fafc;
 }
+
+.custom-seed {
+	background-color: unset !important;
+	box-shadow: unset !important;
+	cursor: pointer;
+
+	&:hover {
+		// transform size bigger
+		transform: scale(1.1);
+	}
+}
+
+.custom-seed-team {
+	background: white;
+	margin: 8px 0px;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	color: black;
+	font-size: 14px;
+
+	&-winner {
+		background-color: #48bb78;
+	}
+}
