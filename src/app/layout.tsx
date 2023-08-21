@@ -19,13 +19,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				<Providers>
 					<Container my="6" minW="1440px">
 						<HStack spacing="6">
-							<img src="/logo.png" alt="logo" style={{ height: 50 }} />
+							<Link href="/">
+								<img src="/logo.png" alt="logo" style={{ height: 50 }} />
+							</Link>
 
 							<HStack spacing="24px">
 								<Link href="/">Főoldal</Link>
 								<Link href="/game-events">Események</Link>
 								<Link href="/leaderboard">Ranglista</Link>
-								<Link href="/players">Játékosok</Link>
+								<Link href="/players">Játékosok</Link>L
 							</HStack>
 						</HStack>
 

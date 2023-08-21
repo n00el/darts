@@ -1,21 +1,20 @@
 import { StarIcon } from '@chakra-ui/icons';
 import { IGame } from 'models/game';
 import { IGameEvent } from 'models/game_event';
-import { IParticipant } from 'models/participant';
+import { IPlayer } from 'models/player';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { Bracket, IRenderSeedProps, IRoundProps, Seed, SeedItem, SeedTeam } from 'react-brackets';
 
 interface IProps {
 	gameEvent: IGameEvent;
-	participants: IParticipant[];
 	games: IGame[];
 }
 
-export default function GameTree({ gameEvent, participants, games }: IProps) {
+export default function GameTree({ gameEvent, games }: IProps) {
 	const router = useRouter();
 
-	if (!gameEvent || !participants || !games) {
+	if (!gameEvent || !games) {
 		return <></>;
 	}
 
@@ -40,14 +39,14 @@ export default function GameTree({ gameEvent, participants, games }: IProps) {
 			const games = levels[parseInt(level)];
 
 			const seeds = games.map((game) => {
-				const participant1: IParticipant = participants.find((participant) => participant.player.id === game.player1);
-				const participant2: IParticipant = participants.find((participant) => participant.player.id === game.player2);
+				const player1: IPlayer = gameEvent.players.find((gamePlayer) => gamePlayer.id === game.player1.id);
+				const player2: IPlayer = gameEvent.players.find((gamePlayer) => gamePlayer.id === game.player2.id);
 
 				return {
 					id: game.id,
 					teams: [
-						{ name: participant1.player.name, id: participant1.player.id },
-						{ name: participant2.player.name, id: participant2.player.id }
+						{ id: player1.id, name: player1.name },
+						{ id: player2.id, name: player2.name }
 					],
 					winner: game.winner
 				};
@@ -63,9 +62,9 @@ export default function GameTree({ gameEvent, participants, games }: IProps) {
 	}, [levels]);
 
 	const CustomSeed = ({ seed, breakpoint, roundIndex, seedIndex }: IRenderSeedProps) => {
-		const winner = seed.winner;
-		const isPlayer1Winner = winner === seed.teams[0].id;
-		const isPlayer2Winner = winner === seed.teams[1].id;
+		const winner = seed.winner as IPlayer;
+		const isPlayer1Winner = winner?.id === seed.teams[0].id;
+		const isPlayer2Winner = winner?.id === seed.teams[1].id;
 
 		return (
 			<Seed mobileBreakpoint={breakpoint} style={{ fontSize: 12 }}>

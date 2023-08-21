@@ -1,12 +1,12 @@
 'use client';
 
-import { Alert, AlertIcon, Button, Card, CardBody, Grid, GridItem, Heading, Stack, Table, TableContainer, Tbody, Td, Text, Tr } from '@chakra-ui/react';
+import { ChevronRightIcon } from '@chakra-ui/icons';
+import { Alert, AlertIcon, Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Card, CardBody, CardHeader, Center, Grid, GridItem, Heading, Stack, Table, TableContainer, Tbody, Td, Text, Tr, VStack } from '@chakra-ui/react';
 import GameTree from 'components/GameTree';
 import { JoinEventModal } from 'components/JoinEventModal';
 import Loading from 'components/Loading';
 import { IGame } from 'models/game';
 import { IGameEvent } from 'models/game_event';
-import { IParticipant } from 'models/participant';
 import moment from 'moment';
 import useSWR from 'swr';
 import { getDayDiff, getDayDiffText } from 'utils/dayDiff';
@@ -14,7 +14,6 @@ import { getDayDiff, getDayDiffText } from 'utils/dayDiff';
 export default function Page({ params }: { params: { id: string } }) {
 	const id = params.id;
 	const { data: gameEvent, isLoading: isLoading } = useSWR<IGameEvent>(`/api/game-events/${id}`);
-	const { data: participants, isLoading: isLoadingParticipants } = useSWR<IParticipant[]>(`/api/game-events/${id}/participants`);
 	const { data: games, isLoading: isLoadingGames } = useSWR<IGame[]>(`/api/games?game_event=${id}`);
 
 	if (isLoading) {
@@ -46,16 +45,32 @@ export default function Page({ params }: { params: { id: string } }) {
 
 	return (
 		<>
+			<Box mb="6">
+				<Breadcrumb spacing="8px" separator={<ChevronRightIcon color="gray.500" />}>
+					<BreadcrumbItem>
+						<BreadcrumbLink href="/">Főoldal</BreadcrumbLink>
+					</BreadcrumbItem>
+
+					<BreadcrumbItem isCurrentPage>
+						<BreadcrumbLink href={`/game-events/${id}`}>{gameEvent.date}</BreadcrumbLink>
+					</BreadcrumbItem>
+				</Breadcrumb>
+			</Box>
+
 			<Grid templateRows="repeat(2, 1fr)" templateColumns="repeat(5, 1fr)" gap={4}>
 				<GridItem rowSpan={2} colSpan={1}>
 					<Card>
-						<CardBody>
-							<Stack spacing="3">
-								<Heading size="md">{eventDate.format('L')}</Heading>
-								<Heading size="sm">{dayDiffText}</Heading>
-							</Stack>
+						<CardHeader>
+							<Center>
+								<VStack>
+									<Heading size="md">{eventDate.format('L')}</Heading>
+									<Heading size="sm">{dayDiffText}</Heading>
+								</VStack>
+							</Center>
+						</CardHeader>
 
-							<TableContainer mt="6">
+						<CardBody>
+							<TableContainer>
 								<Table size="sm">
 									<Tbody>
 										<Tr>
@@ -78,29 +93,25 @@ export default function Page({ params }: { params: { id: string } }) {
 
 					<Card mt="6">
 						<CardBody>
-							{isLoadingParticipants ? (
-								<Loading />
-							) : (
-								<>
-									<Text color="blue.600" fontSize="xl">
-										{participants?.length || 0} résztvevő:
-									</Text>
+							<>
+								<Text color="blue.600" fontSize="xl">
+									{gameEvent.players?.length || 0} résztvevő:
+								</Text>
 
-									<TableContainer>
-										<Table size="sm">
-											<Tbody>
-												<>
-													{participants?.map((participant) => (
-														<Tr key={participant.id}>
-															<Td>{participant.player.name}</Td>
-														</Tr>
-													))}
-												</>
-											</Tbody>
-										</Table>
-									</TableContainer>
-								</>
-							)}
+								<TableContainer>
+									<Table size="sm">
+										<Tbody>
+											<>
+												{gameEvent.players?.map((player) => (
+													<Tr key={player.id}>
+														<Td>{player.name}</Td>
+													</Tr>
+												))}
+											</>
+										</Tbody>
+									</Table>
+								</TableContainer>
+							</>
 						</CardBody>
 					</Card>
 
@@ -130,13 +141,13 @@ export default function Page({ params }: { params: { id: string } }) {
 				</GridItem>
 
 				<GridItem colSpan={4}>
-					{!isLoadingGames && isLoadingParticipants ? (
+					{isLoadingGames ? (
 						<>
 							<Loading />
 						</>
 					) : (
 						<>
-							<GameTree gameEvent={gameEvent} participants={participants} games={games} />
+							<GameTree gameEvent={gameEvent} games={games} />
 						</>
 					)}
 				</GridItem>

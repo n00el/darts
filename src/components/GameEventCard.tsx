@@ -24,7 +24,7 @@ export default function GameEventCard(props: IProps) {
 						{eventDate.format('L')} - {dayDiffText}
 					</Heading>
 					<Text color="blue.600" fontSize="2xl">
-						{props.gameEvent.participants?.length || 0} résztvevő
+						{props.gameEvent.players?.length || 0} résztvevő
 					</Text>
 				</Stack>
 			</CardBody>

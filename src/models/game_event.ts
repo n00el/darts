@@ -1,4 +1,4 @@
-import { IParticipant } from './participant';
+import { IPlayer } from './player';
 
 export interface IGameEvent {
 	id: number;
@@ -9,5 +9,5 @@ export interface IGameEvent {
 	sets: number;
 	legs: number;
 
-	participants?: IParticipant[];
+	players?: IPlayer[];
 }

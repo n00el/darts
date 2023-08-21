@@ -7,9 +7,14 @@ export async function POST(request: NextRequest, context: { params: { id: string
 	const { data } = await supabase.from('game_events').select('*, participants(player)').eq('id', id).limit(1);
 
 	if (!data) {
-		return NextResponse.json(null, {
-			status: 404
-		});
+		return NextResponse.json(
+			{
+				error: 'Game event not found'
+			},
+			{
+				status: 404
+			}
+		);
 	}
 
 	const participants = data[0].participants as { player: number }[];

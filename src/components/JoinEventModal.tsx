@@ -1,6 +1,5 @@
 import { Alert, AlertIcon, Button, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, VStack, useDisclosure } from '@chakra-ui/react';
 import { IGameEvent } from 'models/game_event';
-import { IParticipant } from 'models/participant';
 import { IPlayer } from 'models/player';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
@@ -15,7 +14,6 @@ interface IProps {
 
 export function JoinEventModal({ gameEvent, onSucces, children }: IProps) {
 	const [isLoading, setIsLoading] = useState(false);
-	const [participants, setParticipants] = useState<IParticipant[]>([]);
 	const [players, setPlayers] = useState<IPlayer[]>([]);
 
 	const [selectedPlayerId, setSelectedPlayerId] = useState<number>();
@@ -33,13 +31,9 @@ export function JoinEventModal({ gameEvent, onSucces, children }: IProps) {
 		const runFetch = async () => {
 			setIsLoading(true);
 
-			const participantsResponse = await fetch(`/api/game-events/${gameEvent.id}/participants`);
-			const participantsData = await participantsResponse.json();
-
 			const playersResponse = await fetch('/api/players');
 			const playersData = await playersResponse.json();
 
-			setParticipants(participantsData);
 			setPlayers(playersData);
 
 			setIsLoading(false);
@@ -55,8 +49,8 @@ export function JoinEventModal({ gameEvent, onSucces, children }: IProps) {
 	}, [isOpen]);
 
 	const freePlayers = useMemo(() => {
-		return players.filter((player) => !participants.find((participant) => participant.player.id === player.id));
-	}, [players, participants]);
+		return players.filter((player) => !gameEvent.players?.find((gamePlayer) => gamePlayer.id === player.id));
+	}, [players, gameEvent.players]);
 
 	const handleJoin = async () => {
 		if (!selectedPlayerId) return;
